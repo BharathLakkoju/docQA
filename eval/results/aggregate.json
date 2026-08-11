@@ -1,0 +1,40 @@
+{
+  "total_questions": 61,
+  "errored_questions": 0,
+  "qa_metrics": {
+    "n": 48,
+    "context_precision": 0.554,
+    "context_recall": 0.519,
+    "faithfulness": 0.924,
+    "answer_relevancy": 0.854,
+    "decline_rate": 0.0
+  },
+  "fix_generation_metrics": {
+    "n": 13,
+    "parse_pass_rate": 0.923,
+    "avg_attempts": 1.385
+  },
+  "by_domain": {
+    "n8n": {
+      "context_precision": 0.208,
+      "context_recall": 0.41,
+      "faithfulness": 0.841,
+      "answer_relevancy": 0.755,
+      "parse_pass_rate": 1.0
+    },
+    "github_actions": {
+      "context_precision": 0.516,
+      "context_recall": 0.493,
+      "faithfulness": 0.944,
+      "answer_relevancy": 0.944,
+      "parse_pass_rate": 0.857
+    },
+    "api_errors": {
+      "context_precision": 0.842,
+      "context_recall": 0.654,
+      "faithfulness": 0.99,
+      "answer_relevancy": 0.862,
+      "parse_pass_rate": null
+    }
+  }
+}

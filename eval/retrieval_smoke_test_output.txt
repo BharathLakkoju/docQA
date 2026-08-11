@@ -1,0 +1,240 @@
+====================================================================================================
+QUERY: What does the n8n Webhook node do?
+router -> domain=n8n task_type=factual_lookup needs_fix_generation=False
+
+  [structured retriever] 3 hits
+    score=0.848 id=n8n-node-n8n_template_api-29e9fd5e0780d54f domain=n8n artifact_type=workflow_node
+      Workflow: Learn secure webhook APIs with authentication and Supabase integration (n8n template #8258) Node: Sticky Note Node type: n8n-nodes-base.stic...
+    score=0.815 id=n8n-node-n8n_template_api-85e4aa350c9a707f domain=n8n artifact_type=workflow_node
+      Workflow: Learn secure webhook APIs with authentication and Supabase integration (n8n template #8258) Node: Webhook Node type: n8n-nodes-base.webhook ...
+    score=0.810 id=n8n-node-awesome_n8n_templates_mirror-3f349caa0573c71c domain=n8n artifact_type=workflow_node
+      Workflow: 11007-network-vulnerability-scanner-with-nmap-and-automated-cve-reporting (n8n template #mirror-11007-network-vulnerability-scanner-with-nma...
+
+  [prose retriever] 3 hits
+    score=0.825 id=n8n-doc-integrations_builtin_core-nodes_-9baa969275e0e83e domain=n8n artifact_type=doc_prose
+      # Webhook node documentation  # Webhook  Use the Webhook node to create [webhooks](https://en.wikipedia.org/wiki/Webhook), which can receive data from...
+    score=0.806 id=n8n-doc-integrations_builtin_core-nodes_-c17f2cb097ddf0f1 domain=n8n artifact_type=doc_prose
+      # Respond to Webhook  ## How n8n secures HTML responses  Starting with n8n version 1.103.0, n8n automatically wraps HTML responses to webhooks in `<if...
+    score=0.796 id=n8n-doc-integrations_builtin_core-nodes_-53c39d55f5a34d27 domain=n8n artifact_type=doc_prose
+      # Webhook node common issues  ## Only one webhook per path and method  n8n only permits registering one webhook for each path and HTTP method combinat...
+
+====================================================================================================
+QUERY: How do I use the Schedule Trigger node in n8n?
+router -> domain=n8n task_type=factual_lookup needs_fix_generation=False
+
+  [structured retriever] 3 hits
+    score=0.886 id=n8n-node-n8n_template_api-46416591186879d2 domain=n8n artifact_type=workflow_node
+      Workflow: 🎓 Learn n8n keyboard shortcuts with an interactive hands-on tutorial workflow (n8n template #5270) Node: Schedule Trigger Node type: n8n-nod...
+    score=0.872 id=n8n-node-awesome_n8n_templates_mirror-65236cc131e16979 domain=n8n artifact_type=workflow_node
+      Workflow: Demo Email to Share (n8n template #mirror-10143-create-personalized-email-outreach-with-ai-telegram-bot-website-scraping) Node: Schedule Tri...
+    score=0.868 id=n8n-node-n8n_template_api-8f60ae69f266e4be domain=n8n artifact_type=workflow_node
+      Workflow: AI Personal Assistant (n8n template #4723) Node: Schedule Trigger Node type: n8n-nodes-base.scheduleTrigger Connects to: Email Assistant Par...
+
+  [prose retriever] 3 hits
+    score=0.833 id=n8n-doc-integrations_builtin_core-nodes_-b5fcefe457ecb54b domain=n8n artifact_type=doc_prose
+      # Schedule Trigger node documentation  For example, if you enter `2` **Days Between Triggers**, **9am** for **Trigger at Hour**, and `15` **Trigger at...
+    score=0.833 id=n8n-doc-integrations_builtin_core-nodes_-e1574e81582b3241 domain=n8n artifact_type=doc_prose
+      # Schedule Trigger node documentation  ### Custom (Cron) interval  Enter a custom cron **Expression** to set the schedule for the trigger.  To generat...
+    score=0.832 id=n8n-doc-integrations_builtin_core-nodes_-19bca430ec2f9e8e domain=n8n artifact_type=doc_prose
+      # Schedule Trigger node common issues  # Common issues  Here are some common errors and issues with the [Schedule Trigger node](./README.md) and steps...
+
+====================================================================================================
+QUERY: My n8n workflow throws an AxiosError with status code 400, what's wrong?
+router -> domain=n8n task_type=factual_lookup needs_fix_generation=False
+
+  [structured retriever] 3 hits
+    score=0.794 id=n8n-node-n8n_template_api-313f140da19acbc2 domain=n8n artifact_type=workflow_node
+      Workflow: Auto-heal failing workflows with Azure OpenAI, n8n API, and Slack alerts (n8n template #13791) Node: Get Workflow JSON Node type: n8n-nodes-...
+    score=0.783 id=n8n-node-n8n_template_api-e2fa8ebed82ccd1b domain=n8n artifact_type=workflow_node
+      Workflow: Auto-heal failing workflows with Azure OpenAI, n8n API, and Slack alerts (n8n template #13791) Node: Update Workflow Node type: n8n-nodes-ba...
+    score=0.780 id=n8n-node-n8n_template_api-666b479a56629937 domain=n8n artifact_type=workflow_node
+      Workflow: Auto-heal failing workflows with Azure OpenAI, n8n API, and Slack alerts (n8n template #13791) Node: Retry Execution Node type: n8n-nodes-ba...
+
+  [prose retriever] 3 hits
+    score=0.851 id=n8n-forum-29385-9f6b9feb60346d97 domain=n8n artifact_type=forum_qa
+      # N8n API - Workflows - Get Many not working  ## Question Describe the problem/error/question I’m trying to GET many workflows of my n8n instance. Whe...
+    score=0.848 id=n8n-forum-16736-a460760022d6092a domain=n8n artifact_type=forum_qa
+      # N8n level 2 course - Workflow 2 - Error in workflow  ## Question Problem -  Hi guys,  Following the steps of workflow 2 of the n8n level 2 course, i...
+    score=0.828 id=n8n-forum-76804-c605013d140e30af domain=n8n artifact_type=forum_qa
+      # AxiosError: Request failed with status code 400 at settle  ## Question Hey I have the same problem as YouTube upload is failing - #3 by Jan_Koch  @J...
+
+====================================================================================================
+QUERY: Why is my n8n HTTP Request node returning a 401 Unauthorized error?
+router -> domain=n8n task_type=error_diagnosis needs_fix_generation=False
+
+  [structured retriever] 3 hits
+    score=0.792 id=n8n-node-awesome_n8n_templates_mirror-1dc070b369c794a9 domain=n8n artifact_type=workflow_node
+      Workflow: 💲AgentGatePay - Seller Resource API [TEMPLATE] (n8n template #mirror-11874-create-a-cryptocurrency-powered-api-for-selling-resources-with-ag...
+    score=0.791 id=n8n-node-n8n_template_api-0d378a86985c388a domain=n8n artifact_type=workflow_node
+      Workflow: Diagnose n8n workflow errors with Claude AI, Supabase and Resend email alerts (n8n template #15484) Node: HTTP Request - Get workflow JSON N...
+    score=0.785 id=n8n-node-awesome_n8n_templates_mirror-715dbae29ca63804 domain=n8n artifact_type=workflow_node
+      Workflow: 11975-ai-powered-security-analysis-for-n8n-with-google-gemini-and-n8n-audit-api (n8n template #mirror-11975-ai-powered-security-analysis-for...
+
+  [prose retriever] 3 hits
+    score=0.854 id=n8n-forum-40777-1e4ad08a7ab03891 domain=n8n artifact_type=forum_qa
+      # Code 401 : Request failed with status code 401  ## Question Describe the problem/error/question Hello n8n community  (Sorry for my English, I still ...
+    score=0.840 id=n8n-forum-42120-1448f7d165a9b8be domain=n8n artifact_type=forum_qa
+      # Not able to login to either Docker or npm version of n8n via local network  ## Question I install the latest n8n in both npm and Docker. New install...
+    score=0.822 id=n8n-forum-108840-ad51fdcd0b1ff3d9 domain=n8n artifact_type=forum_qa
+      # API that doesn't return a 401 when the credentials have expired  ## Question Describe the problem/error/question I’m working on a new node. The new ...
+
+====================================================================================================
+QUERY: Fix this n8n workflow node so it correctly authenticates with Google Drive
+router -> domain=n8n task_type=fix_generation needs_fix_generation=True
+
+  [structured retriever] 3 hits
+    score=0.846 id=n8n-node-awesome_n8n_templates_mirror-a7fde9b095371788 domain=n8n artifact_type=workflow_node
+      Workflow: Daily n8n Workflow Backup (Google Drive) (n8n template #mirror-10903-automate-daily-workflow-backups-to-google-drive) Node: Upload to Drive ...
+    score=0.830 id=n8n-node-awesome_n8n_templates_mirror-4c530cc179a47e86 domain=n8n artifact_type=workflow_node
+      Workflow: Daily n8n Workflow Backup (Google Drive) (n8n template #mirror-10903-automate-daily-workflow-backups-to-google-drive) Node: Fetch Workflows ...
+    score=0.827 id=n8n-node-awesome_n8n_templates_mirror-ddbdfba6e4010ef0 domain=n8n artifact_type=workflow_node
+      Workflow: Daily n8n Workflow Backup (Google Drive) (n8n template #mirror-10903-automate-daily-workflow-backups-to-google-drive) Node: Create Backup Fo...
+
+  [prose retriever] 3 hits
+    score=0.805 id=n8n-doc-integrations_builtin_app-nodes_n-cf90542d6e4ec3a4 domain=n8n artifact_type=doc_prose
+      # Google Drive node common issues  # Google Drive node common issues  Here are some common errors and issues with the [Google Drive node](README.md) a...
+    score=0.800 id=n8n-doc-integrations_builtin_app-nodes_n-9ce04fb8e1f690ec domain=n8n artifact_type=doc_prose
+      # Google Drive node documentation  # Google Drive node  Use the Google Drive node to automate work in Google Drive, and integrate Google Drive with ot...
+    score=0.793 id=n8n-forum-163175-feb556ec41648109 domain=n8n artifact_type=forum_qa
+      # Google Drive - Upload File Node cannot work with Service Account authentication  ## Question Describe the problem/error/question We use the Google D...
+
+====================================================================================================
+QUERY: What does actions/checkout do in a GitHub Actions workflow?
+router -> domain=github_actions task_type=factual_lookup needs_fix_generation=False
+
+  [structured retriever] 3 hits
+    score=0.778 id=gha-job-e5c56900b33c5e96161c72562f3fb134-4027bd3e2538626b domain=github_actions artifact_type=workflow_job
+      Workflow: Deploy LiveCodeProject Triggers: push, workflow_dispatch  deploy:   runs-on: ubuntu-latest   steps:   - name: Checkout repository     uses: ...
+    score=0.774 id=gha-job-ddf316116c32a97e24a4429f68cc8ddd-0a43bae685968cd1 domain=github_actions artifact_type=workflow_job
+      Workflow: Project Intelligence Triggers: push, pull_request, workflow_dispatch  scan:   runs-on: ubuntu-latest    steps:   - name: Checkout repo     u...
+    score=0.772 id=gha-job-206e292b9b62148b9abb1655d5aa2c66-146971b596b7fd01 domain=github_actions artifact_type=workflow_job
+      Workflow: Deploy HTML Triggers: push  deploy:   runs-on: ubuntu-latest   steps:   - name: Checkout code     uses: actions/checkout@v3    - name: Deplo...
+
+  [prose retriever] 3 hits
+    score=0.836 id=se-question-73473617-4629b8f0aa12c22b domain=api_errors artifact_type=stackexchange_qa
+      # What is the difference between GitHub actions/checkout@v3 and v2?  ## Question When using GitHub Actions, what is the difference between actions/che...
+    score=0.814 id=se-question-61989951-bd31663659a287e3 domain=api_errors artifact_type=stackexchange_qa
+      # GitHub Action workflow not running  ## Question I have a GitHub action workflow file @ myrepo/.github/workflows/Build Webpage.yml it contains this: ...
+    score=0.798 id=se-question-58798886-40cd29300a3f9063 domain=api_errors artifact_type=stackexchange_qa
+      # Github actions, schedule operation on branch  ## Question I am trying to configure a github workflow, I have managed to configure it on push event. ...
+
+====================================================================================================
+QUERY: How do I use a matrix strategy in a GitHub Actions job?
+router -> domain=github_actions task_type=factual_lookup needs_fix_generation=False
+
+  [structured retriever] 3 hits
+    score=0.778 id=gha-job-2d4b4ebc783bc0837682a1cbc8ba2ea2-cf435ee44b52f80e domain=github_actions artifact_type=workflow_job
+      Workflow: CI Triggers: push, workflow_dispatch  macos:   runs-on: ${{ matrix.platform.runner }}   strategy:     matrix:       platform:       - runner...
+    score=0.777 id=gha-job-c0455ef58ece21c4d0360097ed4b25b0-be18644dae36a9c8 domain=github_actions artifact_type=workflow_job
+      Workflow: GitHub CI Triggers: pull_request, push, schedule  test:   needs: generate-jobs   strategy: ${{ fromJson(needs.generate-jobs.outputs.strategy...
+    score=0.777 id=gha-job-c9d78c0ef1d34aca91c8e91a661c587d-4e73ce011fe4caf6 domain=github_actions artifact_type=workflow_job
+      Workflow: GitHub CI Triggers: pull_request, push, schedule  test:   needs: generate-jobs   strategy: ${{ fromJson(needs.generate-jobs.outputs.strategy...
+
+  [prose retriever] 3 hits
+    score=0.810 id=se-question-65384420-48ab9af4eff35d3f domain=api_errors artifact_type=stackexchange_qa
+      # How do I make a GitHub Action matrix element conditional?  ## Question I have a workflow that uses 'strategy' = 'matrix' along with a list of specif...
+    score=0.760 id=se-question-63521430-75831887f87d6b00 domain=api_errors artifact_type=stackexchange_qa
+      # Clear cache in GitHub Actions  ## Question I am working on an R package and using GitHub Action (GHA) as a Continuous Integration (CI) provider. I c...
+    score=0.760 id=se-question-57903836-cc8d83d5260fcb2c domain=api_errors artifact_type=stackexchange_qa
+      # How to fail a job in Github Actions?  ## Question I'm developing a Github actions workflow. This workflow runs on Linux, Mac, and Windows.  As part ...
+
+====================================================================================================
+QUERY: Why does my GitHub Actions job fail with a Docker build error?
+router -> domain=github_actions task_type=error_diagnosis needs_fix_generation=False
+
+  [structured retriever] 3 hits
+    score=0.879 id=gha-failure-lmorg_murex__github_workflow-a1663305bb39fdfe domain=github_actions artifact_type=failed_run
+      Failing GitHub Actions run Repository: lmorg/murex Workflow: .github/workflows/docker-container.yaml Run: updated github actions Trigger event: push C...
+    score=0.876 id=gha-failure-akshata29_chatpdf__github_wo-4f518340c64345da domain=github_actions artifact_type=failed_run
+      Failing GitHub Actions run Repository: akshata29/chatpdf Workflow: .github/workflows/dockerapi.yml Run: tiktoken package update Trigger event: push Co...
+    score=0.871 id=gha-failure-akshata29_chatpdf__github_wo-edb862b4316f0b28 domain=github_actions artifact_type=failed_run
+      Failing GitHub Actions run Repository: akshata29/chatpdf Workflow: .github/workflows/dockerapi.yml Run: Update langchain and initial Promptflow Trigge...
+
+  [prose retriever] 3 hits
+    score=0.791 id=se-question-57498605-995d66269b39abb0 domain=api_errors artifact_type=stackexchange_qa
+      # Github actions share workspace/artifacts between jobs?  ## Question Trying to use Github's beta actions, I have two jobs, one that builds the code a...
+    score=0.783 id=se-question-57903836-cc8d83d5260fcb2c domain=api_errors artifact_type=stackexchange_qa
+      # How to fail a job in Github Actions?  ## Question I'm developing a Github actions workflow. This workflow runs on Linux, Mac, and Windows.  As part ...
+    score=0.778 id=se-question-58858429-131d5db8c4767823 domain=api_errors artifact_type=stackexchange_qa
+      # How to run a github-actions step, even if the previous step fails, while still failing the job  ## Question I'm trying to follow an example Github h...
+
+====================================================================================================
+QUERY: My GitHub Actions workflow fails on npm test, why?
+router -> domain=github_actions task_type=factual_lookup needs_fix_generation=False
+
+  [structured retriever] 3 hits
+    score=0.783 id=gha-job-b0c70093f59f7b7f1404d90bcb9c5818-a10e38c814c731b8 domain=github_actions artifact_type=workflow_job
+      Workflow: CI Triggers: push, pull_request  test:   strategy:     fail-fast: false     matrix:       os: ['ubuntu-latest', 'macos-latest']       node: ...
+    score=0.771 id=gha-job-8c1115e0762f0ccdd3de9a4e8e0f3a48-fc932d0e4846888b domain=github_actions artifact_type=workflow_job
+      Workflow: Build and Test Triggers: push  build:   runs-on: ubuntu-latest   steps:   - uses: actions/checkout@v4   - uses: actions/setup-node@v4     wi...
+    score=0.770 id=gha-job-36a65d02d6563f00deb5263927cd0321-b60f66138a131385 domain=github_actions artifact_type=workflow_job
+      Workflow: ci Triggers: push, pull_request  test:   runs-on: ubuntu-latest    strategy:     matrix:       node-version: [10.x, 12.x, 13.x]    steps:   ...
+
+  [prose retriever] 3 hits
+    score=0.822 id=se-question-61989951-bd31663659a287e3 domain=api_errors artifact_type=stackexchange_qa
+      # GitHub Action workflow not running  ## Question I have a GitHub action workflow file @ myrepo/.github/workflows/Build Webpage.yml it contains this: ...
+    score=0.799 id=se-question-58858429-131d5db8c4767823 domain=api_errors artifact_type=stackexchange_qa
+      # How to run a github-actions step, even if the previous step fails, while still failing the job  ## Question I'm trying to follow an example Github h...
+    score=0.794 id=se-question-58654530-498d7bd77f09a5ae domain=api_errors artifact_type=stackexchange_qa
+      # How to auto-reject a pull request if tests are failing (Github actions)  ## Question I am doing npm test when pull requests are raised using Github ...
+
+====================================================================================================
+QUERY: Fix this GitHub Actions YAML so the pytest job runs on push and pull_request
+router -> domain=github_actions task_type=fix_generation needs_fix_generation=True
+
+  [structured retriever] 3 hits
+    score=0.808 id=gha-job-3547d15aadf761d541fe015496665e03-6dda33bc2be7da79 domain=github_actions artifact_type=workflow_job
+      Workflow: Python application Triggers: push, pull_request  build:    runs-on: ubuntu-latest    steps:   - uses: actions/checkout@v4   - name: Set up P...
+    score=0.808 id=gha-job-31f62823016fa77a7ca39aa53f1fddc8-bb1bd11eadeea6e2 domain=github_actions artifact_type=workflow_job
+      Workflow: Python application Triggers: push, pull_request  build:    runs-on: ubuntu-latest    steps:   - uses: actions/checkout@v4   - name: Set up P...
+    score=0.800 id=gha-job-80a2548c91b4ed8d68d642ae0ef65210-0ceffb3d02ae7e10 domain=github_actions artifact_type=workflow_job
+      Workflow: CI Triggers: pull_request, push  pytest:   runs-on: ubuntu-latest    steps:    - name: Checkout Code Repository     uses: actions/checkout@v...
+
+  [prose retriever] 3 hits
+    score=0.790 id=se-question-64635032-d00e5d7964899df0 domain=api_errors artifact_type=stackexchange_qa
+      # GitHub Actions run on push to all branches  ## Question It's easy to run a GitHub Action on any push or pull request:  # Triggers the workflow on pu...
+    score=0.787 id=n8n-doc-reusable-content__gitbook_includ-2d986c57b2cbf34c domain=n8n artifact_type=doc_prose
+      # github-action  A GitHub Action example:  ```yaml name: CI on:   # Trigger the workflow on push or pull request events for the "production" branch   ...
+    score=0.769 id=se-question-60710209-0e582211133f6f57 domain=api_errors artifact_type=stackexchange_qa
+      # Trigger Github Actions only when PR is merged  ## Question I have a github actions yaml file as follows:  name: Test deployment on:   pull_request: ...
+
+====================================================================================================
+QUERY: What does HTTP status code 429 mean?
+router -> domain=api_errors task_type=factual_lookup needs_fix_generation=False
+
+  [structured retriever] 3 hits
+    score=0.645 id=n8n-node-n8n_template_api-e904c3c79cdee879 domain=n8n artifact_type=workflow_node
+      Workflow: Automated DHL shipment tracking bot for web forms and email inquiries (n8n template #9876) Node: Get DHL Tracking Status Node type: n8n-node...
+    score=0.643 id=n8n-node-awesome_n8n_templates_mirror-3d65ea2d76c6c5ba domain=n8n artifact_type=workflow_node
+      Workflow: 🤖 AgentGatePay - Buyer Agent MCP [TEMPLATE] (n8n template #mirror-11873-create-autonomous-payment-agents-using-agentgatepay-and-multi-chain-...
+    score=0.643 id=n8n-node-awesome_n8n_templates_mirror-91987557994cbe97 domain=n8n artifact_type=workflow_node
+      Workflow: Multicloud AI Security Control Baseline Builder (n8n template #mirror-7529-transform-cloud-documentation-into-security-baselines-with-openai...
+
+  [prose retriever] 3 hits
+    score=0.777 id=se-question-29762372-d81a2744813507ad domain=api_errors artifact_type=stackexchange_qa
+      # System.Net HttpStatusCode class does not have code 422  ## Question Is there a way to handle http status code 422 gracefully. I am looking for the b...
+    score=0.772 id=iana-status-428-d401f6a9bcdd803e domain=api_errors artifact_type=http_status_registry
+      HTTP status code 428: Precondition Required IANA reference: [RFC6585]...
+    score=0.770 id=mdn-status-409-70b65c5bc635c5e0 domain=api_errors artifact_type=http_status_reference
+      # 409 Conflict  The HTTP **`409 Conflict`** [client error response](/en-US/docs/Web/HTTP/Reference/Status#client_error_responses) status code indicate...
+
+====================================================================================================
+QUERY: What causes a 403 Forbidden error when calling a REST API?
+router -> domain=api_errors task_type=error_diagnosis needs_fix_generation=False
+
+  [structured retriever] 3 hits
+    score=0.697 id=n8n-node-awesome_n8n_templates_mirror-807a77ca4d41103f domain=n8n artifact_type=workflow_node
+      Workflow: Paid X Amplification w/ x402 (n8n template #mirror-10574-monetize-your-x-following-with-x402-and-1shot-api) Node: If Node type: n8n-nodes-ba...
+    score=0.692 id=n8n-node-awesome_n8n_templates_mirror-da283bc1513458d7 domain=n8n artifact_type=workflow_node
+      Workflow: Outbound Agent (n8n template #mirror-10561-generate-personalized-sales-leads-with-claude-ai-explorium-for-gmail-outreach) Node: API Call Val...
+    score=0.691 id=n8n-node-n8n_template_api-08bf3c98a4b2e0e0 domain=n8n artifact_type=workflow_node
+      Workflow: Scrape Google Maps by area & generate outreach messages for lead generation (n8n template #6993) Node: Request finished Node type: n8n-nodes...
+
+  [prose retriever] 3 hits
+    score=0.810 id=mdn-status-403-9c4632495a4d9da6 domain=api_errors artifact_type=http_status_reference
+      # 403 Forbidden  The HTTP **`403 Forbidden`** [client error response](/en-US/docs/Web/HTTP/Reference/Status#client_error_responses) status code indica...
+    score=0.806 id=iana-status-403-8840d3fc94f11a7b domain=api_errors artifact_type=http_status_registry
+      HTTP status code 403: Forbidden IANA reference: [RFC9110, Section 15.5.4]...
+    score=0.744 id=iana-status-405-a46a79e91554f38b domain=api_errors artifact_type=http_status_registry
+      HTTP status code 405: Method Not Allowed IANA reference: [RFC9110, Section 15.5.6]...
+
