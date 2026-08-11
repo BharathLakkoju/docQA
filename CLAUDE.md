@@ -132,19 +132,39 @@ verified data — no mocked pipeline, no massaged numbers.
   scoring just above 0.35; this is pre-existing Phase 3 behavior, not a Phase 5 bug), and the eval
   dashboard rendering the real aggregate + per-question numbers.
 
-**Phase 6 (deployment) configs prepared, not yet applied.** No accounts were created and nothing was
-actually deployed — Claude Code doesn't create third-party accounts or handle logins, and this repo has
-no GitHub remote yet, both of which are prerequisites. What's ready: `backend/Dockerfile` (Python 3.12
-slim + the `actionlint` Go binary installed via its official download script, since Render's Docker
-build needs both), `render.yaml` (Blueprint — free web-service plan, `/health` healthcheck, secrets
-left blank for `PINECONE_API_KEY`/`OPENROUTER_API_KEY`/`CORS_ORIGINS`), and `.dockerignore`. Full
-step-by-step is in `DEPLOYMENT.md` (push to GitHub → Render Blueprint deploy → Vercel import → set
-`CORS_ORIGINS` back on Render → verify live, not just localhost). The Dockerfile was reviewed carefully
-but not build-tested locally (no running Docker daemon in this environment) — verify it actually builds
-before relying on it.
+**Phase 6 (deployment) is live and verified end-to-end**, not just build-tested:
 
-**Not started:** actually running Phase 6 (needs Bharath's own GitHub push + Render/Vercel accounts —
-see `DEPLOYMENT.md`), Phase 7 (README/case study).
+- **Backend**: `https://workflowgpt-backend.onrender.com`, deployed via Render's Docker Blueprint
+  (`render.yaml` + `backend/Dockerfile`, which installs the `actionlint` Go binary alongside Python
+  deps). `/health`, `/query` (both factual-lookup and fix-generation, `actionlint` validating
+  successfully inside the container), and `/eval/*` all confirmed working live via curl.
+- **Frontend**: `https://documentorqa.vercel.app` (Bharath's own custom Vercel alias — the project's
+  Vercel-generated domain is `frontend-bharathlakkojus-projects.vercel.app`, both resolve to the same
+  deployment), deployed via `vercel --prod` from the `frontend/` directory with `NEXT_PUBLIC_API_URL`
+  pointed at the Render backend. Verified in-browser end-to-end on the real public URL: factual lookup,
+  fix-generation (validated, 1 attempt), and the eval dashboard rendering real numbers.
+- **Real deployment issues hit and fixed, worth remembering**:
+  1. `OPENROUTER_API_KEY` was left blank on the first Render apply → every `/query` 500'd with
+     `openai.AuthenticationError: Missing Authentication header` (Pinecone/retrieval worked fine,
+     isolated to the LLM call) — fixed by setting the real key in Render's Environment tab.
+  2. Vercel's CLI prints a transient per-deploy "Aliased: ..." URL in its output that is **not**
+     necessarily the stable production URL — the actual stable one is the project-name-based domain
+     (`frontend-<org>.vercel.app`), discoverable via `vercel alias ls`. Don't trust the CLI's inline
+     "Aliased" line at face value for CORS/env-var wiring.
+  3. Vercel account switch mid-session (`vercel login` in another terminal) meant the old `.vercel/`
+     project link pointed at a project under the *previous* account — `vercel link --yes` again after
+     an account switch, don't assume the existing link is still valid.
+  4. The Vercel project had Deployment Protection (SSO wall) enabled by default, which silently
+     302-redirected every visitor (including CORS preflight) to a Vercel login page — this is a
+     dashboard-only project setting (Settings → Deployment Protection), no CLI toggle; had to be
+     disabled by Bharath directly for the site to be publicly viewable at all.
+  5. Render's free-tier web service spins down after ~15 min idle; the very first request after a cold
+     start can fail client-side as "Failed to fetch" before the service wakes — a retry a few seconds
+     later succeeds. Expected free-tier behavior, not a bug — worth a line in Phase 7's README.
+- CORS is locked to `https://documentorqa.vercel.app` via `CORS_ORIGINS` on Render.
 
-**Git:** six commits on `master`, one per phase (0/scaffolding, 1/ingestion, 2/retrieval, 3/agents,
-4/eval, 5/backend+frontend). No remote configured yet.
+**Not started:** Phase 7 (README/case study) — the only remaining phase.
+
+**Git:** seven commits on `master`, one per phase plus a small `.gitignore` fix for Vercel CLI metadata
+(0/scaffolding, 1/ingestion, 2/retrieval, 3/agents, 4/eval, 5/backend+frontend, 6/deploy-configs, plus
+the gitignore fix). Remote: `https://github.com/BharathLakkoju/docQA.git`, pushed and in sync.
