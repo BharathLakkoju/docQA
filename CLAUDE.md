@@ -132,5 +132,19 @@ verified data — no mocked pipeline, no massaged numbers.
   scoring just above 0.35; this is pre-existing Phase 3 behavior, not a Phase 5 bug), and the eval
   dashboard rendering the real aggregate + per-question numbers.
 
-**Not started:** Phase 6 (deployment), Phase 7 (README/case study). Also: no git commits exist in this
-repo yet despite Phases 0–5 being complete — everything is still untracked/uncommitted working tree.
+**Phase 6 (deployment) configs prepared, not yet applied.** No accounts were created and nothing was
+actually deployed — Claude Code doesn't create third-party accounts or handle logins, and this repo has
+no GitHub remote yet, both of which are prerequisites. What's ready: `backend/Dockerfile` (Python 3.12
+slim + the `actionlint` Go binary installed via its official download script, since Render's Docker
+build needs both), `render.yaml` (Blueprint — free web-service plan, `/health` healthcheck, secrets
+left blank for `PINECONE_API_KEY`/`OPENROUTER_API_KEY`/`CORS_ORIGINS`), and `.dockerignore`. Full
+step-by-step is in `DEPLOYMENT.md` (push to GitHub → Render Blueprint deploy → Vercel import → set
+`CORS_ORIGINS` back on Render → verify live, not just localhost). The Dockerfile was reviewed carefully
+but not build-tested locally (no running Docker daemon in this environment) — verify it actually builds
+before relying on it.
+
+**Not started:** actually running Phase 6 (needs Bharath's own GitHub push + Render/Vercel accounts —
+see `DEPLOYMENT.md`), Phase 7 (README/case study).
+
+**Git:** six commits on `master`, one per phase (0/scaffolding, 1/ingestion, 2/retrieval, 3/agents,
+4/eval, 5/backend+frontend). No remote configured yet.
