@@ -163,7 +163,20 @@ verified data — no mocked pipeline, no massaged numbers.
      later succeeds. Expected free-tier behavior, not a bug — worth a line in Phase 7's README.
 - CORS is locked to `https://documentorqa.vercel.app` via `CORS_ORIGINS` on Render.
 
-**Not started:** Phase 7 (README/case study) — the only remaining phase.
+**Phase 7 (README/case study) complete.** `README.md` leads with the live demo links, the
+interview-ready one-liner, and real eval numbers (including the n8n precision gap and null-judge-score
+limitation, stated plainly rather than hidden), then a textual architecture diagram, tech stack table,
+repo layout, verified local-run instructions, deployment summary, licensing/attribution (explicitly
+**not** a commercial product — n8n content is Sustainable Use License, not OSI open source), and a
+known-limitations section. The "running it locally" instructions were verified by actually running each
+command, not assumed — caught two real correctness issues: (1) several ingestion scripts import sibling
+modules by bare name and only work as direct script paths (`python ingestion/n8n/chunk_workflows.py`),
+not `python -m ingestion...`; (2) three ingestion scripts (`chunk_mirror_templates.py`, `chunk_docs.py`,
+`chunk_mdn_status.py`) expect a pre-cloned source repo with no automated clone step anywhere in the
+codebase — the README now gives explicit `git clone` commands for each. Also added a missing
+`frontend/.env.example` so the documented `cp` command actually works.
+
+**All seven phases are now complete and live.**
 
 **Git:** seven commits on `master`, one per phase plus a small `.gitignore` fix for Vercel CLI metadata
 (0/scaffolding, 1/ingestion, 2/retrieval, 3/agents, 4/eval, 5/backend+frontend, 6/deploy-configs, plus
