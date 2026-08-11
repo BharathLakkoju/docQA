@@ -1,0 +1,43 @@
+# WorkflowGPT / CI-CD Copilot — Python dependencies (ingestion, retrieval, agents, eval, backend)
+# Frontend deps are managed separately in frontend/package.json (Next.js).
+
+# --- Ingestion (Phase 1) ---
+requests==2.32.3
+httpx==0.27.2
+tqdm==4.66.5
+ruamel.yaml==0.18.6
+tiktoken==0.8.0
+python-dotenv==1.0.1
+tenacity==9.0.0
+
+# --- Retrieval (Phase 2) ---
+pinecone==5.4.2
+fastembed==0.4.2
+rank-bm25==0.2.2
+
+# --- LLM client (Phase 3+) ---
+# The `openai` package here is used purely as an OpenAI-API-compatible HTTP
+# client pointed at OpenRouter's base_url (https://openrouter.ai/api/v1) —
+# it never talks to api.openai.com. Free OpenRouter models only, see .env.example.
+openai==1.54.4
+
+# --- Agents / generation (Phase 3) ---
+pydantic==2.9.2
+pydantic-settings==2.6.1
+jsonschema==4.23.0
+# actionlint is a Go binary, not a Python package — installed separately, see backend/README.md.
+
+# --- Backend API (Phase 5) ---
+fastapi==0.115.5
+uvicorn[standard]==0.32.0
+
+# --- Eval (Phase 4) ---
+# RAGAS/DeepEval default to OpenAI for their LLM-as-judge scoring — Phase 4
+# must configure both to use the OpenRouter free-model client instead (via
+# their custom-LLM wrapper APIs), not their OpenAI default.
+ragas==0.2.6
+deepeval==2.1.6
+pandas==2.2.3
+
+# --- Dev/test ---
+pytest==8.3.3
