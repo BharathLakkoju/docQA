@@ -7,12 +7,16 @@ const EXAMPLES = [
   "What does the n8n HTTP Request node do?",
   "Why is my GitHub Actions job failing with 'npm ERR! code ENOENT'?",
   "Write a GitHub Actions job that checks out code and runs npm test on push",
+  "What is MCP (Model Context Protocol)?",
+  "Write a CrewAI agent config with a role, goal, and backstory",
+  "What is the Hugging Face MCP Server?",
 ];
 
 const DOMAIN_LABEL: Record<string, string> = {
   n8n: "n8n",
   github_actions: "GitHub Actions",
   api_errors: "API / HTTP errors",
+  agentic_ai: "Agentic AI / Orchestration",
 };
 
 export default function ChatPage() {

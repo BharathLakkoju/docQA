@@ -7,9 +7,15 @@ collection, and it's structured execution telemetry (actions/steps/exit
 context), not human-written prose, so it belongs with configs. This
 judgment call is documented in ATTRIBUTIONS.md.
 
+The agentic_ai domain (added later, see CLAUDE.md) contributes three
+structured artifact types here too: CrewAI YAML agent/task configs,
+Python agent-code examples (chunked per function/class or notebook cell),
+and MCP JSON schema definitions/examples.
+
 Run after all of ingestion/n8n/{fetch_templates,chunk_workflows,
-chunk_mirror_templates}.py and ingestion/github_actions/{fetch_workflows,
-chunk_workflows,fetch_failure_runs,chunk_failure_runs}.py.
+chunk_mirror_templates}.py, ingestion/github_actions/{fetch_workflows,
+chunk_workflows,fetch_failure_runs,chunk_failure_runs}.py, and
+ingestion/agentic_ai/{chunk_agent_configs,chunk_agent_code,chunk_mcp_schema}.py.
 
 Run as: python -m retrieval.upsert_configs
 """
@@ -24,6 +30,9 @@ FILES = [
     Path("data/processed/n8n/structured_chunks.jsonl"),
     Path("data/processed/github_actions/structured_chunks.jsonl"),
     Path("data/processed/github_actions/failure_chunks.jsonl"),
+    Path("data/processed/agentic_ai/agent_config_chunks.jsonl"),
+    Path("data/processed/agentic_ai/agent_code_chunks.jsonl"),
+    Path("data/processed/agentic_ai/mcp_schema_chunks.jsonl"),
 ]
 
 

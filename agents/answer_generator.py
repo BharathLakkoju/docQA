@@ -17,21 +17,29 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from agents.llm_client import chat  # noqa: E402
 from retrieval.result_types import RetrievedChunk  # noqa: E402
 
-# Pinecone cosine similarity scores from bge-small-en-v1.5 in manual spot checks
-# during Phase 2 clustered well above ~0.4 for genuinely relevant chunks and
-# below ~0.3 for noise. This is a starting point, not a final number — Phase 4
-# eval (context precision/recall) is what actually validates/tunes it.
-RELEVANCE_THRESHOLD = 0.35
+# Recalibrated after a real failure: eval/run_edge_case_tests.py's out_of_corpus
+# cases ("What's the weather like in Paris?", "capital of Australia?", etc.)
+# were all answering confidently instead of declining. Direct measurement showed
+# why 0.35 was wrong — bge-small-en-v1.5 cosine scores for genuinely unrelated
+# queries against this corpus cluster at 0.46-0.53 (not near 0, an anisotropy
+# characteristic of this embedding family), while genuinely relevant queries
+# cluster at 0.78-0.90. 0.6 sits in the wide gap between those two clusters.
+# The original 0.35 was set from a "Phase 2 manual spot check" that evidently
+# never tried a truly out-of-domain query — a caution against trusting a
+# threshold that hasn't been checked against negative examples.
+RELEVANCE_THRESHOLD = 0.6
 
 DECLINE_MESSAGE = (
     "I don't have enough context to answer that. Nothing in the n8n / GitHub Actions / "
-    "API-error corpus I have indexed scored above the relevance threshold for this question."
+    "API-error / AI agent tooling corpus I have indexed scored above the relevance threshold "
+    "for this question."
 )
 
 SYSTEM_PROMPT = (
-    "You are WorkflowGPT, a copilot for n8n workflows, GitHub Actions CI/CD, and API/HTTP "
-    "error debugging. Answer ONLY using the numbered context chunks provided below. "
-    "Cite the chunk number(s) you used like [1] or [2][3] inline. "
+    "You are WorkflowGPT, a copilot for n8n workflows, GitHub Actions CI/CD, API/HTTP "
+    "error debugging, and AI agent tooling (MCP, LangGraph, AutoGen, CrewAI, OpenAI Agents SDK, "
+    "GitHub Copilot, HuggingFace, LangChain). Answer ONLY using the numbered context chunks "
+    "provided below. Cite the chunk number(s) you used like [1] or [2][3] inline. "
     "If the context doesn't actually answer the question, say so plainly instead of guessing."
 )
 

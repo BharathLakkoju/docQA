@@ -67,3 +67,59 @@ def test_generic_workflow_term_does_not_beat_explicit_github_actions_mention():
     # verification (eval/retrieval_smoke_test_output.txt) — this used to
     # misroute to n8n on a 1-1 marker tie broken by dict insertion order.
     assert classify_domain("My GitHub Actions workflow fails on npm test, why?") == "github_actions"
+
+
+def test_domain_agentic_ai_strong_markers():
+    assert classify_domain("How does LangGraph handle multi-agent orchestration?") == "agentic_ai"
+    assert classify_domain("What is MCP (Model Context Protocol)?") == "agentic_ai"
+    assert classify_domain("How do I define a CrewAI agent's role and goal?") == "agentic_ai"
+    assert classify_domain("How does GitHub Copilot's local sandbox work?") == "agentic_ai"
+
+
+def test_agentic_ai_weak_marker_does_not_beat_other_domains():
+    # "agent"/"orchestrat*" alone are shared vocabulary — an n8n query that
+    # happens to say "orchestrate" shouldn't get pulled into agentic_ai.
+    assert classify_domain("How do I orchestrate multiple n8n workflow triggers?") == "n8n"
+
+
+def test_agentic_ai_python_code_fix_phrasing():
+    # Regression: found via manual retrieval verification — "write a
+    # function/agent/node..." (natural phrasing for a Python-code fix
+    # request) didn't match FIX_MARKERS, which was tuned for
+    # "write a job/workflow/yaml/json/config..." from the n8n/GHA domains.
+    r = route("Write a Python function that creates a LangGraph node")
+    assert r.task_type == "fix_generation"
+    assert r.domain == "agentic_ai"
+    assert r.needs_fix_generation is True
+
+
+def test_agentic_ai_fix_generation():
+    r = route("Write a CrewAI agent config with a role, goal, and backstory")
+    assert r.domain == "agentic_ai"
+    assert r.task_type == "fix_generation"
+    assert r.needs_fix_generation is True
+
+
+def test_domain_agentic_ai_phase9_markers():
+    assert classify_domain("How do I fine-tune a model with HuggingFace transformers?") == "agentic_ai"
+    assert classify_domain("What is LangChain?") == "agentic_ai"
+    assert classify_domain("How do I configure OpenAI Codex's sandbox mode?") == "agentic_ai"
+
+
+def test_agentic_workflows_phrase_does_not_fall_through_to_api_errors():
+    # Regression: found via manual retrieval verification. "Agentic" has no
+    # word boundary before "agent" and "Workflows" (plural) doesn't match
+    # n8n's singular \bworkflow\b, so this query scored zero everywhere and
+    # silently defaulted to api_errors before "agentic workflows?"/"agentic"
+    # markers were added.
+    assert classify_domain("What are GitHub Agentic Workflows?") == "agentic_ai"
+
+
+def test_agentic_ai_has_no_error_diagnosis_corpus():
+    # Like api_errors, agentic_ai has no failure-log corpus, so even an
+    # explicit fix-ish request without config-generation phrasing should
+    # not force needs_fix_generation via error markers alone.
+    r = route("Why is my LangGraph agent throwing an error?")
+    assert r.domain == "agentic_ai"
+    assert r.task_type == "error_diagnosis"
+    assert r.needs_fix_generation is False

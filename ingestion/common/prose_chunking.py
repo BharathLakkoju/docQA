@@ -31,13 +31,21 @@ def split_paragraphs(body: str) -> list[str]:
     return [p for p in paras if p]
 
 
+def _count_tokens(text: str) -> int:
+    # disallowed_special=(): this is a token-count helper, not an actual model
+    # call, so literal occurrences of strings like "<|endoftext|>" in source
+    # docs (real content found in HuggingFace's LLM-training docs) must be
+    # counted as plain text, not raise as an unexpected special token.
+    return len(ENC.encode(text, disallowed_special=()))
+
+
 def _trailing_overlap(paragraphs: list[str], overlap_tokens: int) -> list[str]:
     """Return the trailing paragraphs of `paragraphs` whose combined token
     count is <= overlap_tokens, to carry as context into the next window."""
     overlap: list[str] = []
     total = 0
     for p in reversed(paragraphs):
-        t = len(ENC.encode(p))
+        t = _count_tokens(p)
         if total + t > overlap_tokens:
             break
         overlap.insert(0, p)
@@ -53,11 +61,11 @@ def pack_into_windows(paragraphs: list[str], chunk_tokens: int = 600, overlap_to
     current_tokens = 0
 
     for para in paragraphs:
-        para_tokens = len(ENC.encode(para))
+        para_tokens = _count_tokens(para)
         if current and current_tokens + para_tokens > chunk_tokens:
             windows.append("\n\n".join(current))
             current = _trailing_overlap(current, overlap_tokens)
-            current_tokens = sum(len(ENC.encode(p)) for p in current)
+            current_tokens = sum(_count_tokens(p) for p in current)
         current.append(para)
         current_tokens += para_tokens
 

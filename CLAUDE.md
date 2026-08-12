@@ -5,15 +5,16 @@ This file is read by Claude (via Claude Code) at the start of every session on t
 ## Project identity
 
 **Name:** WorkflowGPT / CI-CD Copilot
-**One-line description:** A domain-specific, agentic RAG system that answers natural-language questions about n8n workflows, GitHub Actions CI/CD configs, and API/HTTP error debugging — and goes a step further by generating validated, corrected YAML/JSON config fixes, not just prose answers.
+**One-line description:** A domain-specific, agentic RAG system that answers natural-language questions about n8n workflows, GitHub Actions CI/CD configs, API/HTTP error debugging, and AI agent tooling (MCP, LangGraph, AutoGen, CrewAI, OpenAI Agents SDK, GitHub Copilot) — and goes a step further by generating validated, corrected YAML/JSON/Python fixes, not just prose answers.
 **Why this project exists:** This is a resume/portfolio project built to help Bharath move from his current Developer I / AI Software Engineer role into a stronger AI Software Engineer, Full Stack, or SDE-1/SDE-2 role. It is one of two "non-negotiable" project types recruiters look for (production RAG with a real eval layer). It must read as genuine domain authority (Bharath's own n8n/GitHub Actions/API debugging experience), not a generic tutorial.
-**Distinctness from Bharath's other projects:** This is not Dvelve (his multi-agent research assistant). Dvelve demonstrates multi-agent orchestration. This project demonstrates retrieval evaluation rigor, hybrid structured/unstructured retrieval, and agentic self-correction on code/config artifacts. Do not blur the two when writing docs, READMEs, or resume bullets.
+**Distinctness from Bharath's other projects:** This is not Dvelve (his multi-agent research assistant). Dvelve *runs* multi-agent orchestration at execution time. WorkflowGPT's runtime architecture is unchanged by the `agentic_ai` domain addition (2026-08-12): it remains a single generator (Answer Generator or Fix Agent, never both, never multiple agents coordinating) plus a validate/reflect loop against one artifact at a time. Adding `agentic_ai` only changes what WorkflowGPT's retrieval corpus knows *about* (MCP, LangGraph, AutoGen, CrewAI, OpenAI Agents SDK — documentation and code, ingested as static content) — it does not make WorkflowGPT itself orchestrate multiple agents. Do not blur "answers questions about multi-agent frameworks" with "is a multi-agent system" when writing docs, READMEs, or resume bullets.
 
 ## Non-negotiable architectural decisions (already made — do not revisit without explicit request)
 
 - **Vector DB: Pinecone.** Chosen for free-tier generosity and resume/hiring-signal value (managed, production-style vector service). Do not switch to ChromaDB/Weaviate unless Bharath explicitly asks.
 - **Hybrid retrieval, two collections, not one.** Structured artifacts (n8n workflow JSON, GitHub Actions YAML) go in one collection using AST/structure-aware chunking (per node/job/step, not fixed-token windows). Unstructured prose (docs, forum threads, Stack Overflow Q&A) goes in a separate collection using standard semantic chunking (~600 tokens, ~100 overlap). This split is the core technical differentiator for the case study — do not collapse it into a single naive chunking pipeline to save time.
-- **Agentic fix-suggestion loop, not just Q&A.** The system must not only answer questions but propose corrected YAML/JSON config snippets via a LangGraph-style generate → validate → reflect → regenerate loop. Validation means actually parsing/linting the output (`actionlint` for GitHub Actions YAML, n8n's own JSON schema for workflow JSON) before returning it. A "fix" that hasn't been validated is not a fix — it's a guess, and must be labeled as unverified if validation fails after retries.
+- **Agentic fix-suggestion loop, not just Q&A.** The system must not only answer questions but propose corrected YAML/JSON/Python snippets via a LangGraph-style generate → validate → reflect → regenerate loop. Validation means actually parsing/linting the output (`actionlint` for GitHub Actions YAML, n8n's own JSON schema for workflow JSON, `ast.parse()` for `agentic_ai` Python agent code, a self-derived structural schema for `agentic_ai` CrewAI YAML configs) before returning it. A "fix" that hasn't been validated is not a fix — it's a guess, and must be labeled as unverified if validation fails after retries.
+- **4th domain (`agentic_ai`) added 2026-08-12, with a licensing constraint that overrode the literal request.** The domain covers AI agent tooling / multi-agent orchestration (MCP, LangGraph, AutoGen, CrewAI, OpenAI Agents SDK) plus GitHub Copilot/Actions docs. What was NOT included: Anthropic, OpenAI, and Cursor's own docs/blog sites, all three of which carry explicit anti-scraping ToS clauses (not just silence/`NOASSERTION` like the GitHub Actions YAML precedent) — excluded per this project's own "don't scrape what an explicit ToS clause disallows" rule, not a judgment call to revisit. Claude/OpenAI content is covered instead via their own MIT-licensed open-source repos (`anthropics/claude-cookbooks`, `openai/openai-agents-python`). Cursor has no open-source substitute and is simply absent from the corpus. Do not add Claude/OpenAI/Cursor's proprietary doc/blog sites to the corpus without re-checking their ToS has changed.
 - **Frontend: Next.js (App Router), deployed on Vercel. Backend: FastAPI, deployed on Render/Railway/Fly.io free tier.** Matches Bharath's existing stack. Do not propose Streamlit.
 - **Eval is not optional and is not an afterthought.** RAGAS and/or DeepEval score retrieval (context precision/recall) and generation (faithfulness/answer relevancy) separately. A 50–100 question stratified eval set (across n8n / GitHub Actions / API-errors, and across factual-lookup / error-diagnosis / fix-generation task types) is a hard deliverable, with real, unmassaged numbers reported in the README — including mediocre ones if that's what the pipeline produces.
 - **Zero cost, always. Never OpenAI, anywhere.** Explicit standing constraint from Bharath (2026-08-11): this project must be buildable and deployable without spending a penny. Embeddings run locally via `fastembed` (ONNX runtime, no PyTorch, no API key, ~150MB RAM — chosen specifically because it's cheap enough to run inside the free-tier backend at query time, not just at index-build time). All LLM calls (Answer Generator, Fix Agent, and RAGAS/DeepEval's LLM-as-judge scoring) go through OpenRouter using `:free`-suffixed models only — never OpenAI directly, never a paid OpenRouter model. Current default is `google/gemma-4-31b-it:free`; free model availability changes, so re-check `GET https://openrouter.ai/api/v1/models` (filter for `:free`) before assuming a hardcoded model id still exists.
@@ -27,6 +28,8 @@ Full source catalogue, licensing notes, and ingestion plan live in `INSTRUCTIONS
 - GitHub Actions structured corpus: Cardoen/Mens/Decan YAML dataset (Zenodo `10.5281/zenodo.10259013`), topped up with live GitHub Search-Code API pulls if needed.
 - GitHub Actions failure corpus: GHALogs (Zenodo `10.5281/zenodo.10154920`) — `runs.json.gz` metadata plus a sampled subset of raw logs, not the full 142GB log archive.
 - API/HTTP error prose corpus: Stack Exchange API (not the gated data dump, to sidestep the anti-LLM-training clause) for `github-actions`/`api`/`http-status-codes` tags, plus MDN HTTP status docs and the IANA status code registry.
+- Agentic AI corpus (`agentic_ai` domain, added 2026-08-12): `github/docs` (`content/copilot/**` → `agentic_ai` doc_prose; `content/actions/**` → `github_actions` doc_prose, closing that domain's original prose gap), `modelcontextprotocol/modelcontextprotocol` (docs → prose, `schema/` → `mcp_schema`), `crewAIInc/crewAI` (docs → prose, canonical `agents.yaml`/`tasks.yaml` templates → `agent_config`), `openai/openai-agents-python` (docs → prose, `examples/*.py` → `agent_code`), `langchain-ai/langgraph` (docs moved off-repo, so only `examples/*.ipynb` → `agent_code`/`doc_prose`), `microsoft/autogen` (`python/` docs/examples/notebooks only, `.NET` docs skipped as off-topic), `anthropics/claude-cookbooks` (notebooks → `agent_code`/`doc_prose`). Full per-source license table and licensing rationale in ATTRIBUTIONS.md's "Agentic AI corpus" section.
+- Agentic AI corpus, Phase 9 extension (same day, 2026-08-12): `openai/codex` (`docs/` → prose — thinner than expected, mostly redirect stubs, stated plainly), `huggingface/hub-docs` + `huggingface/transformers` (`docs/`, scoped to conceptual guides, excluding the 513-file `model_doc/` reference tree), `langchain-ai/docs` (`src/oss/`, scoped to `langchain/`/`langgraph/`/`concepts/`/`deepagents/`). Claude Code, Cursor, and Windsurf were all re-checked and confirmed to have no redistributable substitute (ToS-blocked, no open mirror) — see ATTRIBUTIONS.md's Phase 9 section for the per-source verdicts.
 
 **Licensing constraints that affect code, not just docs:**
 - Do not bulk-download or redistribute the Stack Overflow data dump; use the live Stack Exchange API and attribute per Stack Exchange's terms (link back to source, credit authors).
@@ -176,8 +179,65 @@ not `python -m ingestion...`; (2) three ingestion scripts (`chunk_mirror_templat
 codebase — the README now gives explicit `git clone` commands for each. Also added a missing
 `frontend/.env.example` so the documented `cp` command actually works.
 
-**All seven phases are now complete and live.**
+**All seven original phases are complete and live. Phases 8 and 9 (4th domain: `agentic_ai`) followed
+the same day, 2026-08-12** — see the "Non-negotiable architectural decisions" and "Data sourcing ground
+truth" sections above for the licensing rationale and source list. Summary of what's real and verified:
 
-**Git:** seven commits on `master`, one per phase plus a small `.gitignore` fix for Vercel CLI metadata
-(0/scaffolding, 1/ingestion, 2/retrieval, 3/agents, 4/eval, 5/backend+frontend, 6/deploy-configs, plus
-the gitignore fix). Remote: `https://github.com/BharathLakkoju/docQA.git`, pushed and in sync.
+- **Ingestion**: 9,961 new chunks in Phase 8 (7 sources: MCP, CrewAI, OpenAI Agents SDK, LangGraph,
+  AutoGen, Claude Cookbooks, GitHub Docs), + 3,080 more in Phase 9 (OpenAI Codex, HuggingFace,
+  LangChain). Five real content-quality bugs found and fixed by actually inspecting output, not
+  assumed correct: GitHub Docs' raw Liquid templating leaking into chunks, a token-counter crash on a
+  literal `<|endoftext|>` string in HuggingFace's own docs, an HTML-comment copyright header leaking
+  into extracted titles, TypeScript/JS content leaking into what was assumed to be a Python-only
+  LangChain source, and — the significant one — `openai_agents_sdk_docs` silently ingesting Korean/
+  Japanese/Chinese translations and auto-generated API-reference stubs (111 + 239 of 386 files) into
+  what was assumed to be English-only content; 1,314 stale vectors were deleted from Pinecone once
+  caught, not just excluded going forward.
+- **Retrieval/router**: `agentic_ai` added to the Query Router with weighted markers; two real routing
+  gaps found via live manual verification and fixed (regression-tested): "GitHub Agentic Workflows"
+  (no word-boundary match on "Agentic," no plural match on n8n's singular "workflow" marker) fell
+  through to `api_errors` by default before an `agentic workflows?`/bare-`agentic` marker was added;
+  "write a Python function that..." (natural phrasing for a code-fix request) didn't match
+  `FIX_MARKERS`, which was tuned for "write a job/workflow/yaml/json/config..." from the n8n/GHA
+  domains. `github_actions` also gained its first real prose corpus (previously zero).
+- **Fix Agent**: two new validated kinds under `agentic_ai` — `ast.parse()` for Python agent code
+  (no subprocess needed), a self-derived CrewAI structural schema for YAML configs — dispatched off the
+  LLM's own fenced-code-block language tag, with a content-sniff fallback if that tag is missing.
+- **Eval**: expanded from 61 → 89 → 232 questions. 177/232 scored as of this writing (2026-08-12,
+  resumed same day after the quota reset noted below): qa_metrics n=156, context_precision 0.423,
+  context_recall 0.457, faithfulness 0.966, answer_relevancy 0.889; fix_generation n=21,
+  parse_pass_rate 0.952, avg_attempts 1.238. By domain, api_errors leads on context_precision (0.802)
+  and context_recall (0.748); agentic_ai trails on both (0.208 / 0.276) — plausibly the newest, densest
+  corpus (14k+ chunks, many single-topic doc pages titled just "What is X?") stressing retrieval
+  precision harder than the other three domains. Real, current numbers in `eval/results/aggregate.json`
+  — see that file rather than trusting a copy pasted here, since it will go stale first. The remaining 55
+  questions are blocked on OpenRouter free-tier quota exhaustion again (confirmed live: a direct
+  post-run probe call also 429'd) — likely worsened by running the eval resume and the edge-case suite
+  concurrently against the same shared free-tier pool. Resume with `python eval/run_eval.py` once the
+  quota clears; it now correctly retries only genuine errors (see bug below), not everything.
+  A separate router-level robustness suite (`eval/run_edge_case_tests.py`, 24 cases) confirmed 23/24
+  passing after two real bugs found and fixed this session (not "already passed clean" — that claim in
+  an earlier version of this file was wrong, caught by actually running the suite):
+  1. **RELEVANCE_THRESHOLD was miscalibrated (0.35, way too low).** All 6 out-of-corpus cases ("what's
+     the weather in Paris?", "capital of Australia?", etc.) were answering confidently instead of
+     declining. Direct measurement showed why: bge-small-en-v1.5 cosine scores for genuinely unrelated
+     queries against this corpus cluster at 0.46-0.53 (embedding anisotropy, not near 0), while
+     genuinely relevant queries cluster at 0.78-0.90. Raised to 0.6 (mid-gap) in
+     `agents/answer_generator.py`; all 6 cases now correctly decline. The original 0.35 was set from a
+     "Phase 2 manual spot check" that evidently never tried a truly out-of-domain query.
+  2. `load_completed_ids` in `eval/run_eval.py` treated *any* prior line (including error records) as
+     "already done," so a resume run would skip previously-errored questions forever instead of
+     retrying them — meaning quota-exhaustion failures were permanent, not transient. Fixed
+     (`load_prior_results`) to only count genuinely-scored records as complete and retry errors.
+  3. (Pre-existing, still open) `eval/run_edge_case_tests.py`'s single failure is a live `RateLimitError`
+     on a malformed-input case — not a code defect, just quota contention from running two eval jobs
+     concurrently; re-run in isolation to confirm clean if it matters for the README.
+- **Production hardening found live, not hypothetically**: `backend/app.py`'s `/query` had no exception
+  handling around the pipeline call — confirmed via the actual rate-limit exhaustion above that this
+  produced a bare 500; fixed to return a clean, actionable 503. `answer_generator.py`'s decline message
+  and system prompt still only named the original 3 domains, silently omitting `agentic_ai` — fixed.
+
+**Git:** seven commits on `master` for the original phases, one per phase plus a small `.gitignore` fix
+for Vercel CLI metadata (0/scaffolding, 1/ingestion, 2/retrieval, 3/agents, 4/eval, 5/backend+frontend,
+6/deploy-configs, plus the gitignore fix), **plus Phase 8/9 work not yet committed as of this writing**.
+Remote: `https://github.com/BharathLakkoju/docQA.git`.

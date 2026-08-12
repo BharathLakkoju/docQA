@@ -1,40 +1,47 @@
 {
-  "total_questions": 61,
-  "errored_questions": 0,
+  "total_questions": 232,
+  "errored_questions": 55,
   "qa_metrics": {
-    "n": 48,
-    "context_precision": 0.554,
-    "context_recall": 0.519,
-    "faithfulness": 0.924,
-    "answer_relevancy": 0.854,
+    "n": 156,
+    "context_precision": 0.423,
+    "context_recall": 0.457,
+    "faithfulness": 0.966,
+    "answer_relevancy": 0.889,
     "decline_rate": 0.0
   },
   "fix_generation_metrics": {
-    "n": 13,
-    "parse_pass_rate": 0.923,
-    "avg_attempts": 1.385
+    "n": 21,
+    "parse_pass_rate": 0.952,
+    "avg_attempts": 1.238
   },
   "by_domain": {
     "n8n": {
-      "context_precision": 0.208,
-      "context_recall": 0.41,
-      "faithfulness": 0.841,
-      "answer_relevancy": 0.755,
+      "context_precision": 0.313,
+      "context_recall": 0.462,
+      "faithfulness": 0.91,
+      "answer_relevancy": 0.837,
       "parse_pass_rate": 1.0
     },
     "github_actions": {
-      "context_precision": 0.516,
-      "context_recall": 0.493,
-      "faithfulness": 0.944,
-      "answer_relevancy": 0.944,
+      "context_precision": 0.403,
+      "context_recall": 0.413,
+      "faithfulness": 0.972,
+      "answer_relevancy": 0.964,
       "parse_pass_rate": 0.857
     },
     "api_errors": {
-      "context_precision": 0.842,
-      "context_recall": 0.654,
-      "faithfulness": 0.99,
-      "answer_relevancy": 0.862,
+      "context_precision": 0.802,
+      "context_recall": 0.748,
+      "faithfulness": 0.974,
+      "answer_relevancy": 0.826,
       "parse_pass_rate": null
+    },
+    "agentic_ai": {
+      "context_precision": 0.208,
+      "context_recall": 0.276,
+      "faithfulness": 0.993,
+      "answer_relevancy": 0.912,
+      "parse_pass_rate": 1.0
     }
   }
 }

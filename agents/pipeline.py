@@ -23,9 +23,16 @@ TOP_K = 5
 # exists: factual/fix queries want real config (node/job) chunks, error
 # diagnosis wants the failure corpus — an unfiltered query lets failure
 # chunks crowd out job chunks for factual "what does X do" style queries.
+# One shared list per task_type (not split per domain) is intentional: the
+# structured retriever's domain filter already excludes non-matching
+# artifact_types (e.g. an n8n query never gets agent_config chunks back
+# regardless of this list, since those chunks are tagged domain=agentic_ai),
+# so listing every domain's relevant types here is redundant-but-harmless,
+# not a correctness risk. agentic_ai has no error_diagnosis corpus (see
+# retrieval/query_router.py), so its types aren't listed there.
 ARTIFACT_TYPES_BY_TASK = {
-    "factual_lookup": ["workflow_node", "workflow_job"],
-    "fix_generation": ["workflow_node", "workflow_job"],
+    "factual_lookup": ["workflow_node", "workflow_job", "agent_config", "agent_code", "mcp_schema"],
+    "fix_generation": ["workflow_node", "workflow_job", "agent_config", "agent_code", "mcp_schema"],
     "error_diagnosis": ["failed_run", "workflow_node", "workflow_job"],
 }
 
@@ -44,8 +51,10 @@ class PipelineResult:
 
 def handle_query(query: str) -> PipelineResult:
     router_result = route(query)
-    structured_domain = router_result.domain if router_result.domain in ("n8n", "github_actions") else None
-    prose_domain = router_result.domain if router_result.domain in ("n8n", "api_errors") else None
+    structured_domain = router_result.domain if router_result.domain in ("n8n", "github_actions", "agentic_ai") else None
+    # github_actions gained a real prose corpus (github/docs' content/actions) alongside the
+    # agentic_ai domain addition — previously it had none, see CLAUDE.md's original gap analysis.
+    prose_domain = router_result.domain if router_result.domain in ("n8n", "api_errors", "github_actions", "agentic_ai") else None
     artifact_types = ARTIFACT_TYPES_BY_TASK.get(router_result.task_type)
 
     if router_result.needs_fix_generation:

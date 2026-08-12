@@ -57,7 +57,7 @@ class ChunkOut(BaseModel):
 
 
 class RouterOut(BaseModel):
-    domain: Literal["n8n", "github_actions", "api_errors"]
+    domain: Literal["n8n", "github_actions", "api_errors", "agentic_ai"]
     task_type: Literal["factual_lookup", "error_diagnosis", "fix_generation"]
     needs_fix_generation: bool
 
@@ -102,7 +102,18 @@ def query(req: QueryRequest) -> QueryResponse:
     if not q:
         raise HTTPException(status_code=400, detail="query must not be empty")
 
-    result = handle_query(q)
+    try:
+        result = handle_query(q)
+    except Exception as e:
+        # Real failure mode, not hypothetical: this project's zero-cost LLM
+        # calls go through OpenRouter's free-tier models, which have a
+        # shared daily rate limit that can exhaust mid-session (hit live
+        # during Phase 8/9 eval work) — surfaced as a clean, actionable 503
+        # rather than a bare 500 with an internal stack trace.
+        raise HTTPException(
+            status_code=503,
+            detail=f"The AI service is temporarily unavailable (likely a free-tier rate limit) — please try again shortly. ({e})",
+        ) from e
     router_out = RouterOut(
         domain=result.router.domain,
         task_type=result.router.task_type,

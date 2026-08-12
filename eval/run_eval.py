@@ -49,15 +49,23 @@ def load_questions(path: Path, limit: int | None) -> list[dict]:
     return items[:limit] if limit else items
 
 
-def load_completed_ids(per_question_path: Path) -> set[str]:
+def load_prior_results(per_question_path: Path) -> tuple[set[str], list[dict]]:
+    """Only genuinely *scored* (has "scores") prior results count as done —
+    error records must be retried on resume, not skipped forever. Returns
+    (completed_ids, kept_records) where kept_records excludes prior errors
+    so re-running doesn't accumulate duplicate stale-error entries for the
+    same id alongside a fresh result."""
     if not per_question_path.exists():
-        return set()
-    ids = set()
+        return set(), []
+    kept = []
     for line in per_question_path.open(encoding="utf-8"):
         line = line.strip()
-        if line:
-            ids.add(json.loads(line)["id"])
-    return ids
+        if not line:
+            continue
+        record = json.loads(line)
+        if "scores" in record:
+            kept.append(record)
+    return {r["id"] for r in kept}, kept
 
 
 # Cap on chunks (and chars/chunk) shown to the judge for scoring — NOT a
@@ -136,9 +144,16 @@ def main() -> None:
     out_dir.mkdir(parents=True, exist_ok=True)
     per_question_path = out_dir / "per_question.jsonl"
 
-    completed_ids = load_completed_ids(per_question_path)
+    completed_ids, kept_records = load_prior_results(per_question_path)
     if completed_ids:
         print(f"Resuming: {len(completed_ids)} questions already scored in {per_question_path}, skipping those.")
+        dropped_errors = sum(1 for _ in per_question_path.open(encoding="utf-8") if _.strip()) - len(kept_records)
+        if dropped_errors:
+            print(f"Retrying {dropped_errors} previously-errored questions (not treated as done).")
+        # Rewrite with only the genuinely-scored records; retried questions get appended fresh below.
+        with per_question_path.open("w", encoding="utf-8") as f:
+            for r in kept_records:
+                f.write(json.dumps(r, ensure_ascii=False) + "\n")
 
     judge = get_judge_model()
 
@@ -206,7 +221,7 @@ def build_aggregate(per_question: list[dict]) -> dict:
         "by_domain": {},
     }
 
-    for domain in ("n8n", "github_actions", "api_errors"):
+    for domain in ("n8n", "github_actions", "api_errors", "agentic_ai"):
         domain_qa = [r for r in qa_records if r["domain"] == domain]
         domain_fix = [r for r in fix_records if r["domain"] == domain]
         aggregate["by_domain"][domain] = {

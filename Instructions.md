@@ -83,6 +83,91 @@ Concrete, sequenced build instructions for WorkflowGPT / CI-CD Copilot. This is 
 3. Do not claim this is a commercial product (n8n's content is under a fair-code license, not OSI open source) — frame it as an open, attributed portfolio/research project.
 4. Draft the one-sentence interview-ready summary, e.g.: "I built an agentic RAG copilot over n8n workflows, GitHub Actions configs, and API error patterns that not only answers questions but generates and validates corrected YAML/JSON fixes, with an independent RAGAS/DeepEval evaluation layer scoring retrieval and generation separately."
 
+## Phase 8 — 4th domain: Agentic AI / Multi-Agent Orchestration tooling
+
+Added after Phase 7, once all seven original phases were live. Same ingestion → retrieval/router →
+agentic fix loop → eval → frontend/docs order as Phases 1–5, applied to a new `agentic_ai` domain
+covering AI agent tooling, agentic orchestration frameworks, and MCP.
+
+### 8a. Sourcing — with a real licensing constraint
+
+The request that prompted this domain named Claude/OpenAI/Cursor docs and blogs explicitly. All three
+carry explicit anti-scraping ToS clauses (not just silence, unlike the GitHub Actions YAML precedent in
+1c) — excluded outright per this project's own licensing rule, not worked around. Cursor has no
+open-source substitute and is dropped. Approved substitute sources (all redistributable, see
+ATTRIBUTIONS.md for exact licenses and per-source chunk counts): `github/docs` (`content/actions` fills
+the pre-existing GitHub Actions prose gap; `content/copilot` becomes the Cursor substitute),
+`modelcontextprotocol/modelcontextprotocol`, `crewAIInc/crewAI`, `openai/openai-agents-python`,
+`langchain-ai/langgraph`, `microsoft/autogen`, `anthropics/claude-cookbooks` (the Claude/OpenAI
+substitute — their own MIT-licensed SDK/cookbook repos, not their ToS-blocked doc sites).
+
+### 8b. Chunking — two new structured artifact types, one new prose complication
+
+- `agent_config`: CrewAI YAML agent/task configs, chunked per agent/task (same one-chunk-per-unit
+  philosophy as n8n nodes/GHA jobs).
+- `agent_code`: Python examples, chunked per top-level function/class via `ast.parse` (a genuinely new
+  chunking pattern — source-code parsing, not YAML/JSON tree-walking) or per notebook cell for `.ipynb`
+  sources; notebook markdown cells become `doc_prose` in the same pass.
+- `mcp_schema`: MCP JSON schema type definitions and request/response examples, one chunk per
+  definition/example.
+- `github/docs`' Markdown uses build-time Liquid templating (`{% data variables.X %}`,
+  `{% ifversion %}`, IDE/OS-tab conditionals) — resolved via a small dedicated module rather than
+  indexed as raw template syntax; a handful of pages driven by genuine `{% for %}` loops over external
+  data tables were excluded rather than partially resolved.
+
+### 8c. Retrieval/router
+
+`agentic_ai` added to the Query Router's `Domain` literal with its own weighted STRONG/WEAK markers
+(framework names strong, "agent"/"orchestrat*" weak); supports `factual_lookup` and `fix_generation`
+but not `error_diagnosis` (no failure-log corpus exists for these frameworks — an honest gap, like
+`api_errors` having no fix-generation today). `github_actions` also gained prose retrieval for the
+first time (previously zero prose corpus).
+
+### 8d. Fix Agent
+
+Two validated fix kinds under one domain: `ast.parse()` for Python agent code (no subprocess needed,
+unlike `actionlint`), and a self-derived CrewAI structural schema (role/goal/backstory or
+description/expected_output) for YAML configs — CrewAI publishes no official schema either, same
+honesty-note precedent as the n8n schema. Which kind a request wants is read off the LLM's own fenced
+code-block language tag, with a content-sniff fallback if that tag is missing.
+
+### 8e. Eval
+
+20 new questions (12 factual_lookup, 8 fix_generation, stratified across the seven sources), appended
+to the existing 61 with IDs `eval-061`..`eval-080`. Full 81-question re-run required — aggregate metrics
+are computed globally, not incrementally.
+
+## Phase 9 — Extending the agentic_ai domain: OpenAI Codex, HuggingFace, LangChain
+
+Added the same day as Phase 8, in response to a follow-up request to also cover Claude Code, OpenAI/
+Codex, Cursor, Windsurf, HuggingFace, and LangChain docs. Re-checked licensing per name: Claude Code's
+repo is public but "All rights reserved" (Anthropic Commercial Terms), and Cursor/Windsurf both have
+explicit anti-scraping AUPs/MSAs with zero open-source docs mirrors anywhere — all three skipped, same
+reasoning as Phase 8. Three names had genuine redistributable substitutes and were added as more
+`doc_prose` sources within the existing `agentic_ai` domain (no new artifact types, no new Fix Agent
+validators — these four sources are prose-only):
+
+- `openai/codex` (`docs/`, Apache-2.0) — thinner than expected on inspection: 8 of 15 files are short
+  redirect stubs to `developers.openai.com`, only `install.md` is substantive. Included anyway and
+  stated plainly in ATTRIBUTIONS.md, per the "no fabricated/massaged data, even mediocre" rule.
+- `huggingface/hub-docs` + `huggingface/transformers` (`docs/`, both Apache-2.0) — `transformers`
+  scoped to top-level guides/`tasks/`/`quantization/`/`main_classes/` only; `model_doc/` (513
+  near-identical per-architecture reference pages) excluded as low-density volume, same judgment as
+  CrewAI's version-folder exclusion in Phase 8.
+- `langchain-ai/docs` (`src/oss/`, MIT) — LangChain's docs moved off-repo like LangGraph's did, but
+  landed at this separate, still-open repo (unlike LangGraph's own dead `docs/llms.txt` link-index).
+  Scoped to `langchain/`, `langgraph/`, `concepts/`, `deepagents/`; excluded `python/integrations/`
+  (same low-density issue as `model_doc/`), `javascript/`, and `langchain/frontend/` (TypeScript/React
+  UI-integration content that leaked into an early spot-check).
+
+Two real ingestion bugs found and fixed during this phase (both documented in detail in
+ATTRIBUTIONS.md): `transformers`' Apache-License HTML-comment header was leaking into extracted chunk
+titles (fixed by stripping `<!--...-->` blocks), and `tiktoken`'s token counter raised on the literal
+string `<|endoftext|>` appearing in HuggingFace's own LLM-training docs (fixed via
+`disallowed_special=()`). Router markers extended for the four new sources' vocabulary
+(`codex`/`huggingface`/`transformers`/`langchain`); 8 new factual_lookup eval questions appended
+(`eval-081`..`eval-088`) — no fix_generation, since none of these sources added a fixable artifact type.
+
 ## Standing rules throughout all phases
 
 - Do not fabricate data, sources, or eval numbers at any phase.

@@ -9,14 +9,14 @@ This is not a single-shot RAG chain. It is a small agentic pipeline with a route
 ## Agent roles
 
 ### 1. Query Router
-**Responsibility:** Classify an incoming user question into a domain (n8n / GitHub Actions / API-error) and a task type (factual lookup / error diagnosis / fix-generation request).
+**Responsibility:** Classify an incoming user question into a domain (n8n / GitHub Actions / API-error / agentic AI tooling) and a task type (factual lookup / error diagnosis / fix-generation request).
 **Why it exists:** Determines which retrieval collection(s) to query and whether the downstream Fix Agent should even engage. A factual lookup ("what does this n8n node do") should never trigger the fix-generation/validation loop; a fix request should always retrieve from the structured (config) collection first.
 **Inputs:** raw user query.
 **Outputs:** `{domain, task_type, needs_fix_generation: bool}`.
 **Notes:** Keep this cheap — a small classification prompt or a lightweight rules+LLM hybrid is fine. Do not over-engineer; its only job is routing.
 
 ### 2. Structured Retriever (configs)
-**Responsibility:** Retrieve from the Pinecone collection holding AST/structure-chunked n8n workflow JSON and GitHub Actions YAML (chunked per node/job/step, with metadata: file path, trigger type, action/node names).
+**Responsibility:** Retrieve from the Pinecone collection holding AST/structure-chunked n8n workflow JSON, GitHub Actions YAML (chunked per node/job/step), and — for the agentic AI tooling domain — CrewAI YAML agent/task configs, Python agent-code examples (chunked per function/class or notebook cell), and MCP JSON schema definitions/examples, all with metadata: file path, trigger type, action/node/agent names.
 **Why it exists:** Structured config data breaks under naive fixed-token chunking; this retriever exists specifically to preserve node/job/step boundaries so retrieved context is a coherent, parseable unit, not a mid-block text fragment.
 **Inputs:** query (or router-refined query) + domain filter.
 **Outputs:** top-k config chunks with metadata.
@@ -34,11 +34,11 @@ This is not a single-shot RAG chain. It is a small agentic pipeline with a route
 **Outputs:** natural-language answer + citations to source chunks.
 
 ### 5. Fix Agent (generate → validate → reflect loop)
-**Responsibility:** For fix-generation requests, produce a corrected YAML (GitHub Actions) or JSON (n8n workflow) snippet grounded in retrieved structured context, then validate it, then retry with reflection if validation fails, up to a capped number of attempts.
+**Responsibility:** For fix-generation requests, produce a corrected YAML (GitHub Actions), JSON (n8n workflow), or — for the agentic AI tooling domain — Python agent code or CrewAI YAML agent/task config, grounded in retrieved structured context, then validate it, then retry with reflection if validation fails, up to a capped number of attempts.
 **Why it exists:** This is the agentic differentiator — the thing that separates this from a prose-only RAG chatbot. A fix that hasn't been mechanically validated is not a fix.
 **Loop steps:**
-1. **Generate:** produce a corrected config snippet, constrained to valid YAML/JSON structure (schema-constrained decoding or a Pydantic model), grounded in retrieved structured context plus any relevant prose context (e.g., a forum thread describing the same error).
-2. **Validate:** actually parse and lint the output — `actionlint` for GitHub Actions YAML, n8n's workflow JSON schema for n8n configs. This is a real subprocess/library call, not an LLM self-report of validity.
+1. **Generate:** produce a corrected snippet, constrained to the target format (schema-constrained decoding or a Pydantic model for YAML/JSON; a plain Python function/class for agent code), grounded in retrieved structured context plus any relevant prose context (e.g., a forum thread describing the same error). For the agentic AI domain, which of its two fixable kinds (Python code vs. CrewAI YAML) a request wants is read off the query's own phrasing up front, and confirmed by the fenced code block's language tag once the LLM responds.
+2. **Validate:** actually parse and lint the output — `actionlint` for GitHub Actions YAML, n8n's workflow JSON schema for n8n configs, `ast.parse()` for agentic-AI Python code, a self-derived CrewAI structural schema for agentic-AI YAML configs. This is a real parse/lint call, not an LLM self-report of validity.
 3. **Reflect:** if validation fails, feed the validator's error output back into the generator as additional context and retry.
 4. **Cap:** after N attempts (e.g., 3), stop and return the best attempt labeled explicitly as **unverified** if it still fails validation. Never silently return an unvalidated fix as if it were confirmed correct.
 **Inputs:** query, retrieved structured + prose context, router output.

@@ -17,7 +17,7 @@ export type Chunk = {
 };
 
 export type RouterResult = {
-  domain: "n8n" | "github_actions" | "api_errors";
+  domain: "n8n" | "github_actions" | "api_errors" | "agentic_ai";
   task_type: "factual_lookup" | "error_diagnosis" | "fix_generation";
   needs_fix_generation: boolean;
 };

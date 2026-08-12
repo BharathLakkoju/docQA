@@ -22,6 +22,7 @@ const DOMAIN_LABEL: Record<string, string> = {
   n8n: "n8n",
   github_actions: "GitHub Actions",
   api_errors: "API / HTTP errors",
+  agentic_ai: "Agentic AI / Orchestration",
 };
 
 export default function EvalDashboard() {
@@ -98,7 +99,7 @@ export default function EvalDashboard() {
 
       <section className="rounded-lg border border-slate-200 bg-white p-4">
         <h2 className="mb-3 text-sm font-semibold text-ink">By domain</h2>
-        <div className="grid gap-6 sm:grid-cols-3">
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {Object.entries(agg.by_domain).map(([domain, m]) => (
             <div key={domain} className="space-y-2">
               <h3 className="text-xs font-semibold text-slate-700">{DOMAIN_LABEL[domain] ?? domain}</h3>
@@ -111,9 +112,11 @@ export default function EvalDashboard() {
           ))}
         </div>
         <p className="mt-4 text-xs text-slate-500">
-          n8n's context precision (0.208) is notably lower than GitHub Actions (0.516) and API errors
-          (0.842) — plausibly because the free-model judge finds it harder to assess relevance of dense
-          structured-JSON node-parameter chunks than clean YAML/prose. Disclosed as-is, not hidden.
+          n8n's context precision (0.208) is notably lower than every other domain, including the AI
+          agent tooling domain (0.336) whose structured content (CrewAI YAML, Python code, MCP JSON
+          schema) is similarly dense — so this looks like a chunk-shape-specific weak spot for the free
+          judge model, not a general "structured content scores low" pattern. GitHub Actions (0.516) and
+          API errors (0.842) score higher still. Disclosed as-is, not hidden.
         </p>
       </section>
 
