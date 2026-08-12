@@ -53,9 +53,14 @@ class EmptyCompletion(Exception):
     # A single attempt per model: on a free-tier 429, moving straight to the
     # next fallback model is faster than waiting out this model's backoff
     # (observed empirically during Phase 4 eval — see run_eval.py timing).
+    # reraise=True is load-bearing: without it, tenacity wraps the final
+    # failure in a RetryError instead of re-raising RateLimitError/
+    # EmptyCompletion, so chat()'s except clause below never catches it and
+    # the whole fallback-across-models loop silently never runs.
     retry=retry_if_exception_type((RateLimitError, EmptyCompletion)),
     stop=stop_after_attempt(1),
     wait=wait_exponential(multiplier=1, min=1, max=2),
+    reraise=True,
 )
 def _try_model(client: OpenAI, model: str, messages: list[dict], max_tokens: int, temperature: float) -> str:
     resp = client.chat.completions.create(
