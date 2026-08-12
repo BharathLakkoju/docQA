@@ -1,7 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { fetchAggregateEval, fetchPerQuestionEval, type AggregateEval, type PerQuestionEval } from "@/lib/api";
+import { useCallback, useEffect, useState } from "react";
+import {
+  fetchAggregateEval,
+  fetchPerQuestionEval,
+  ApiError,
+  type AggregateEval,
+  type PerQuestionEval,
+} from "@/lib/api";
 
 function Bar({ label, value, max = 1 }: { label: string; value: number | null; max?: number }) {
   const pct = value == null ? 0 : Math.max(0, Math.min(100, (value / max) * 100));
@@ -31,21 +37,33 @@ export default function EvalDashboard() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+  const load = useCallback(() => {
+    setLoading(true);
+    setError(null);
     Promise.all([fetchAggregateEval(), fetchPerQuestionEval()])
       .then(([a, r]) => {
         setAgg(a);
         setRows(r);
       })
-      .catch((e) => setError(e instanceof Error ? e.message : String(e)))
+      .catch((e) => setError(e instanceof ApiError ? e.message : e instanceof Error ? e.message : String(e)))
       .finally(() => setLoading(false));
   }, []);
+
+  useEffect(() => {
+    load();
+  }, [load]);
 
   if (loading) return <p className="text-sm text-slate-500">Loading eval results...</p>;
   if (error)
     return (
-      <div className="rounded-md border border-red-300 bg-red-50 px-3 py-2 text-sm text-red-700">
-        {error}
+      <div className="flex items-start justify-between gap-3 rounded-md border border-red-300 bg-red-50 px-3 py-2 text-sm text-red-700">
+        <span>{error}</span>
+        <button
+          onClick={load}
+          className="shrink-0 rounded-md border border-red-300 bg-white px-2 py-1 text-xs font-medium text-red-700 hover:bg-red-100"
+        >
+          Retry
+        </button>
       </div>
     );
   if (!agg) return null;

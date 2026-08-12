@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { runQuery, type QueryResponse } from "@/lib/api";
+import { runQuery, ApiError, type QueryResponse } from "@/lib/api";
 
 const EXAMPLES = [
   "What does the n8n HTTP Request node do?",
@@ -23,6 +23,7 @@ export default function ChatPage() {
   const [query, setQuery] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [lastSubmitted, setLastSubmitted] = useState<string | null>(null);
   const [result, setResult] = useState<QueryResponse | null>(null);
 
   async function submit(q: string) {
@@ -31,11 +32,12 @@ export default function ChatPage() {
     setLoading(true);
     setError(null);
     setResult(null);
+    setLastSubmitted(trimmed);
     try {
       const res = await runQuery(trimmed);
       setResult(res);
     } catch (e) {
-      setError(e instanceof Error ? e.message : String(e));
+      setError(e instanceof ApiError ? e.message : e instanceof Error ? e.message : String(e));
     } finally {
       setLoading(false);
     }
@@ -90,8 +92,17 @@ export default function ChatPage() {
       </div>
 
       {error && (
-        <div className="rounded-md border border-red-300 bg-red-50 px-3 py-2 text-sm text-red-700">
-          {error}
+        <div className="flex items-start justify-between gap-3 rounded-md border border-red-300 bg-red-50 px-3 py-2 text-sm text-red-700">
+          <span>{error}</span>
+          {lastSubmitted && (
+            <button
+              onClick={() => submit(lastSubmitted)}
+              disabled={loading}
+              className="shrink-0 rounded-md border border-red-300 bg-white px-2 py-1 text-xs font-medium text-red-700 hover:bg-red-100 disabled:opacity-50"
+            >
+              Retry
+            </button>
+          )}
         </div>
       )}
 
